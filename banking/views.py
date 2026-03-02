@@ -17,9 +17,7 @@ from .services import execute_transfer, TransferError
 from security.otp import verify_otp
 
 
-# ── Customer: My Balance ────────────────────────────────────────────────────
 class MyAccountView(generics.RetrieveAPIView):
-    """GET /api/banking/my-account/ – customer views own account."""
 
     serializer_class = AccountSerializer
     permission_classes = [IsAuthenticated, IsCustomer]
@@ -28,21 +26,15 @@ class MyAccountView(generics.RetrieveAPIView):
         return self.request.user.account
 
 
-# ── Staff/Admin: List all accounts ──────────────────────────────────────────
 class AccountListView(generics.ListAPIView):
-    """GET /api/banking/accounts/ – staff/admin list all accounts."""
 
     queryset = Account.objects.select_related('user').all()
     serializer_class = AccountSerializer
     permission_classes = [IsAuthenticated, IsStaffOrAdmin]
 
 
-# ── Account Lookup (UPI-style) ──────────────────────────────────────────────
 class AccountLookupView(APIView):
-    """
-    POST /api/banking/lookup/
-    Real-time name verification before payment.
-    """
+
     permission_classes = [IsAuthenticated, IsCustomer]
 
     def post(self, request):
@@ -68,12 +60,8 @@ class AccountLookupView(APIView):
         )
 
 
-# ── P2P Transfer ────────────────────────────────────────────────────────────
 class TransferView(APIView):
-    """
-    POST /api/banking/transfer/
-    Customer-only P2P transfer with OTP verification.
-    """
+
     permission_classes = [IsAuthenticated, IsCustomer]
 
     def post(self, request):
@@ -81,14 +69,12 @@ class TransferView(APIView):
         ser.is_valid(raise_exception=True)
         data = ser.validated_data
 
-        # ── Verify OTP ──────────────────────────────────────────────────
         if not verify_otp(request.user.id, data['otp']):
             return Response(
                 {'error': 'Invalid or expired OTP.'},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # ── Resolve receiver ────────────────────────────────────────────
         try:
             receiver_account = Account.objects.get(
                 account_number=data['receiver_account_number'],
@@ -99,7 +85,6 @@ class TransferView(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        # ── Execute atomic transfer ─────────────────────────────────────
         try:
             txn = execute_transfer(
                 sender_account=request.user.account,
@@ -123,9 +108,7 @@ class TransferView(APIView):
         )
 
 
-# ── Transaction History ─────────────────────────────────────────────────────
 class TransactionHistoryView(generics.ListAPIView):
-    """GET /api/banking/transactions/ – customer's transaction history."""
 
     serializer_class = TransactionSerializer
     permission_classes = [IsAuthenticated, IsCustomer]

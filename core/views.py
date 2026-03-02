@@ -8,7 +8,6 @@ from .permissions import IsAdmin
 
 
 class RegisterView(generics.CreateAPIView):
-    """POST /api/core/register/ – public customer registration."""
 
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
@@ -28,7 +27,6 @@ class RegisterView(generics.CreateAPIView):
 
 
 class CreateStaffView(generics.CreateAPIView):
-    """POST /api/core/create-staff/ – admin-only staff creation."""
 
     queryset = User.objects.all()
     serializer_class = StaffCreateSerializer
@@ -48,7 +46,6 @@ class CreateStaffView(generics.CreateAPIView):
 
 
 class ProfileView(generics.RetrieveAPIView):
-    """GET /api/core/profile/ – returns the authenticated user's profile."""
 
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]

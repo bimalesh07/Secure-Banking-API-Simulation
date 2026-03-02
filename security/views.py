@@ -15,9 +15,7 @@ from .serializers import (
 from .otp import generate_otp
 
 
-# ── Staff: Create Action Request (Maker) ────────────────────────────────────
 class CreateActionRequestView(generics.CreateAPIView):
-    """POST /api/security/action-requests/ – Staff initiates a sensitive action."""
 
     serializer_class = CreateActionRequestSerializer
     permission_classes = [IsAuthenticated, IsStaff]
@@ -38,9 +36,7 @@ class CreateActionRequestView(generics.CreateAPIView):
         )
 
 
-# ── Admin: List Pending Requests ────────────────────────────────────────────
 class PendingActionRequestsView(generics.ListAPIView):
-    """GET /api/security/action-requests/pending/ – Admin sees all pending."""
 
     serializer_class = ActionRequestSerializer
     permission_classes = [IsAuthenticated, IsAdmin]
@@ -51,13 +47,8 @@ class PendingActionRequestsView(generics.ListAPIView):
         ).select_related('initiated_by', 'target_account', 'target_account__user')
 
 
-# ── Admin: Review (Approve / Reject) ────────────────────────────────────────
 class ReviewActionRequestView(APIView):
-    """
-    POST /api/security/action-requests/<id>/review/
-    Admin approves or rejects a pending action.
-    On approval the action is executed immediately.
-    """
+
     permission_classes = [IsAuthenticated, IsAdmin]
 
     def post(self, request, pk):
@@ -96,7 +87,6 @@ class ReviewActionRequestView(APIView):
 
     @staticmethod
     def _execute_action(action_request):
-        """Execute the approved action on the target account."""
         account = action_request.target_account
         if action_request.action_type == ActionType.DEACTIVATE_ACCOUNT:
             account.is_active = False
@@ -104,15 +94,12 @@ class ReviewActionRequestView(APIView):
         elif action_request.action_type == ActionType.DELETE_ACCOUNT:
             account.is_active = False
             account.save(update_fields=['is_active'])
-            # Soft delete – we keep the record for audit trail
         elif action_request.action_type == ActionType.ACTIVATE_ACCOUNT:
             account.is_active = True
             account.save(update_fields=['is_active'])
 
 
-# ── All Action Requests (Admin) ─────────────────────────────────────────────
 class AllActionRequestsView(generics.ListAPIView):
-    """GET /api/security/action-requests/all/ – Admin can see complete history."""
 
     serializer_class = ActionRequestSerializer
     permission_classes = [IsAuthenticated, IsAdmin]
@@ -121,19 +108,13 @@ class AllActionRequestsView(generics.ListAPIView):
     ).all()
 
 
-# ── Generate OTP for Transfer ───────────────────────────────────────────────
 class GenerateOTPView(APIView):
-    """
-    POST /api/security/otp/generate/
-    Customer requests a 6-digit OTP before making a transfer.
-    In production this would be sent via SMS/Email.
-    """
+
     permission_classes = [IsAuthenticated, IsCustomer]
 
     def post(self, request):
         code = generate_otp(request.user.id)
-        # In a real app we'd send via SMS/email, not return it
         return Response({
             'message': 'OTP generated successfully. Valid for 5 minutes.',
-            'otp': code,   # ← Returned here for simulation/testing only
+            'otp': code,
         })

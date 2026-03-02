@@ -1,11 +1,7 @@
-"""
-Custom DRF permissions for RBAC.
-"""
 from rest_framework.permissions import BasePermission
 
 
 class IsAdmin(BasePermission):
-    """Only ADMIN (Checker) users."""
     def has_permission(self, request, view):
         return (
             request.user
@@ -15,7 +11,6 @@ class IsAdmin(BasePermission):
 
 
 class IsStaff(BasePermission):
-    """Only STAFF (Maker) users."""
     def has_permission(self, request, view):
         return (
             request.user
@@ -25,7 +20,6 @@ class IsStaff(BasePermission):
 
 
 class IsCustomer(BasePermission):
-    """Only CUSTOMER users."""
     def has_permission(self, request, view):
         return (
             request.user
@@ -35,7 +29,6 @@ class IsCustomer(BasePermission):
 
 
 class IsStaffOrAdmin(BasePermission):
-    """STAFF or ADMIN users."""
     def has_permission(self, request, view):
         return (
             request.user

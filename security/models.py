@@ -1,9 +1,3 @@
-"""
-Maker-Checker Workflow Model
-────────────────────────────
-Staff (Maker) creates an ActionRequest → Admin (Checker) Approves / Rejects.
-Only on approval is the action executed.
-"""
 from django.db import models
 from django.conf import settings
 
@@ -21,9 +15,6 @@ class ActionStatus(models.TextChoices):
 
 
 class ActionRequest(models.Model):
-    """
-    Represents a sensitive action initiated by Staff that requires Admin approval.
-    """
 
     action_type = models.CharField(max_length=20, choices=ActionType.choices)
     target_account = models.ForeignKey(
@@ -35,7 +26,6 @@ class ActionRequest(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='initiated_actions',
-        help_text='Staff member who created this request.',
     )
     reviewed_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -43,7 +33,6 @@ class ActionRequest(models.Model):
         null=True,
         blank=True,
         related_name='reviewed_actions',
-        help_text='Admin who approved or rejected.',
     )
     status = models.CharField(
         max_length=10,

@@ -3,14 +3,12 @@ from .models import ActionRequest
 
 
 class CreateActionRequestSerializer(serializers.ModelSerializer):
-    """Staff creates a new action request."""
 
     class Meta:
         model = ActionRequest
         fields = ['id', 'action_type', 'target_account', 'reason']
 
     def validate(self, attrs):
-        # Prevent duplicate pending requests on the same account + action
         if ActionRequest.objects.filter(
             target_account=attrs['target_account'],
             action_type=attrs['action_type'],
@@ -46,6 +44,5 @@ class ActionRequestSerializer(serializers.ModelSerializer):
 
 
 class ReviewActionSerializer(serializers.Serializer):
-    """Admin approves or rejects."""
     action = serializers.ChoiceField(choices=['APPROVE', 'REJECT'])
     admin_remarks = serializers.CharField(required=False, default='')

@@ -1,12 +1,3 @@
-"""
-Custom User Model – built from scratch using AbstractBaseUser.
-
-Roles
-─────
-CUSTOMER  → can check balance, do P2P transfers
-STAFF     → "Maker" – can view accounts, initiate sensitive actions
-ADMIN     → "Checker" – approves/rejects staff actions, creates staff
-"""
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 
@@ -18,7 +9,6 @@ class UserRole(models.TextChoices):
 
 
 class UserManager(BaseUserManager):
-    """Manager for the custom User model."""
 
     def create_user(self, email, phone, password=None, **extra_fields):
         if not email:
@@ -40,7 +30,6 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    """Custom User with Email + Phone as identifiers."""
 
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=15, unique=True)

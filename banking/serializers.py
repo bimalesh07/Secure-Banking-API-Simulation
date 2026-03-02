@@ -1,6 +1,5 @@
 from decimal import Decimal
 from rest_framework import serializers
-
 from .models import Account, Transaction
 
 
@@ -18,7 +17,6 @@ class AccountSerializer(serializers.ModelSerializer):
 
 
 class AccountLookupSerializer(serializers.Serializer):
-    """Used for real-time name verification (UPI-style)."""
     account_number = serializers.CharField(max_length=12)
 
 

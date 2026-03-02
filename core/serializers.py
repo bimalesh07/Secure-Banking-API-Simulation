@@ -3,7 +3,6 @@ from .models import User, UserRole
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-    """Public registration – always creates a CUSTOMER."""
 
     password = serializers.CharField(write_only=True, min_length=8)
 
@@ -19,7 +18,6 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class StaffCreateSerializer(serializers.ModelSerializer):
-    """Admin-only – creates a STAFF user."""
 
     password = serializers.CharField(write_only=True, min_length=8)
 
