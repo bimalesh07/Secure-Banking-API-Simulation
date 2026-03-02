@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from core.permissions import IsAdmin, IsStaff, IsCustomer
+from core.throttles import OTPRateThrottle
 
 from .models import ActionRequest, ActionStatus, ActionType
 from .serializers import (
@@ -111,6 +112,7 @@ class AllActionRequestsView(generics.ListAPIView):
 class GenerateOTPView(APIView):
 
     permission_classes = [IsAuthenticated, IsCustomer]
+    throttle_classes = [OTPRateThrottle]
 
     def post(self, request):
         code = generate_otp(request.user.id)

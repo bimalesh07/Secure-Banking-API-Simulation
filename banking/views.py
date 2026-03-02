@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from core.permissions import IsCustomer, IsStaffOrAdmin
+from core.throttles import TransferRateThrottle
 
 from .models import Account, Transaction
 from .serializers import (
@@ -63,6 +64,7 @@ class AccountLookupView(APIView):
 class TransferView(APIView):
 
     permission_classes = [IsAuthenticated, IsCustomer]
+    throttle_classes = [TransferRateThrottle]
 
     def post(self, request):
         ser = TransferSerializer(data=request.data)
