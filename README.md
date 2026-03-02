@@ -1,6 +1,4 @@
 # 🏦 Secure Banking API Simulation
-
-**Development Environment**: Google Project IDX (Cloud IDE)  
 **Core Stack**: Python (Django + DRF), PostgreSQL, Redis, Docker.
 
 ## 📌 Project Vision
@@ -8,8 +6,7 @@ A simulation-based banking engine focusing on data integrity and enterprise secu
 
 ## 🛠 Features & Functionalities
 
-### 1. Cloud-Native Infrastructure (Google IDX & Docker)
-- **Project IDX Setup**: Environment configuration using `.idx/dev.nix` for seamless cloud development.
+### 1. Cloud-Native Infrastructure (Docker)
 - **Containerized Services**: 
   - **PostgreSQL**: Primary database with Docker Volumes for persistent financial records.
   - **Redis**: High-speed in-memory store for OTPs and Rate Limiting.
